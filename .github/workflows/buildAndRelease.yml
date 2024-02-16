@@ -54,7 +54,7 @@ jobs:
             docker pull lhamacorp/spring-ocr:latest
             docker stop qm || true
             docker rm qm || true
-            docker run -d --name qm -p 42783:8080 -e mongo=${{ secrets.MONGO }} lhamacorp/spring-ocr:latest
+            docker run -d --name qm -p 42783:8080 lhamacorp/spring-ocr:latest
 
   cleanup:
     name: Clean ups
