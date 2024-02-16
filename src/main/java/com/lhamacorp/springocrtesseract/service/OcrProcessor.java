@@ -10,7 +10,7 @@ import java.util.UUID;
 @Slf4j
 public class OcrProcessor {
 
-    public static void executeTesseract(String id, String imagePath, String outputFilePath, String language) {
+    public static void executeTesseract(String id, String imagePath, String outputFilePath, String language) throws IOException, InterruptedException {
         try {
             String command = String.format("tesseract %s %s -l %s", imagePath, outputFilePath, language);
 
@@ -27,9 +27,13 @@ public class OcrProcessor {
                 log.info("Ocr execution successful [{}]", id);
             } else {
                 log.error("Ocr execution failed [{}]", id);
+                throw new Exception(id);
             }
         } catch (IOException | InterruptedException e) {
             log.error("Failed to process image [{}]", id, e);
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 
@@ -39,6 +43,10 @@ public class OcrProcessor {
         String outputFilePath = "./results/" + id;
         String language = "deu";
 
-        executeTesseract(id, imagePath, outputFilePath, language);
+        try {
+            executeTesseract(id, imagePath, outputFilePath, language);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

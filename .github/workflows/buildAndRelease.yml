@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build with Gradle
+        run: chmod +x ./gradlew && ./gradlew clean build test
+
+  dockerize:
+    name: Dockerize Application
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build the Docker image
+        run: ./gradlew build && docker build -t lhamacorp/qm .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push image
+        run: docker push lhamacorp/spring-ocr
+
+  deploy:
+    name: Deploy to Server
+    needs: dockerize
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker pull lhamacorp/spring-ocr:latest
+            docker stop qm || true
+            docker rm qm || true
+            docker run -d --name qm -p 42783:8080 -e mongo=${{ secrets.MONGO }} lhamacorp/spring-ocr:latest
+
+  cleanup:
+    name: Clean ups
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean up Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker image prune -a -f

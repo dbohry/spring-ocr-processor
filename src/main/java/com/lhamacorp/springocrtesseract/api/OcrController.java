@@ -15,12 +15,6 @@ public class OcrController {
 
     private final OcrService service;
 
-    @GetMapping
-    public ResponseEntity<JobResult> process() {
-        JobResult response = new JobResult(service.process());
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping
     public ResponseEntity<JobResult> processImage(@RequestPart(value = "file") MultipartFile file) {
         JobResult response = new JobResult(service.processImage(file));

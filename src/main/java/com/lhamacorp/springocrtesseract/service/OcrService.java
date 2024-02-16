@@ -1,6 +1,6 @@
 package com.lhamacorp.springocrtesseract.service;
 
-import lombok.SneakyThrows;
+import com.lhamacorp.springocrtesseract.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,17 +19,6 @@ import static com.lhamacorp.springocrtesseract.service.OcrProcessor.executeTesse
 @Service
 public class OcrService {
 
-    public String process() {
-        String id = UUID.randomUUID().toString();
-        String imagePath = "./files/IMG_6599.jpeg";
-        String outputFilePath = "./results/" + id;
-        String language = "deu";
-
-        executeTesseract(id, imagePath, outputFilePath, language);
-
-        return id;
-    }
-
     public String processImage(MultipartFile file) {
         String id = UUID.randomUUID().toString();
         String uploadDir = "./files/" + id;
@@ -45,16 +34,20 @@ public class OcrService {
 
             executeTesseract(id, imagePath, outputFilePath, language);
             return id;
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             System.err.println("An error occurred while processing file " + id + ": " + e.getMessage());
             return "Failed";
         }
     }
 
-    @SneakyThrows
     public String findProcess(String id) {
-        String filePath = "./files/" + id + "/output.txt";
-        return Files.readString(Paths.get(filePath));
+        try {
+            String filePath = "./files/" + id + "/output.txt";
+            return Files.readString(Paths.get(filePath));
+        } catch (IOException e) {
+            throw new NotFoundException("Ocr result not found");
+        }
+
     }
 
 }
