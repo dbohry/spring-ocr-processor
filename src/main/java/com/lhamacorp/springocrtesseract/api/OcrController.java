@@ -27,8 +27,8 @@ public class OcrController {
             responses = {
                     @ApiResponse(responseCode = "202", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = JobResult.class))),
             })
-    public ResponseEntity<JobResult> processImage(@RequestPart(value = "file") MultipartFile file) {
-        JobResult response = new JobResult(service.processImage(file));
+    public ResponseEntity<JobResult> processImage(@RequestPart(value = "file") MultipartFile file, @RequestParam(name = "lang", required = false) String lang) {
+        JobResult response = new JobResult(service.triggerProcess(file, lang));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
