@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("ocr")
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class OcrController {
             responses = {
                     @ApiResponse(responseCode = "202", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = JobResult.class))),
             })
-    public ResponseEntity<JobResult> processImage(@RequestPart(value = "file") MultipartFile file, @RequestParam(name = "lang", required = false) String lang) {
+    public ResponseEntity<JobResult> processImage(@RequestPart(value = "file") MultipartFile file, @RequestParam(name = "lang", required = false) String lang) throws IOException {
         JobResult response = new JobResult(service.triggerProcess(file, lang));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
