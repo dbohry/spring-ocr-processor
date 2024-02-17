@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -20,7 +21,7 @@ public class OcrProcessor {
         Path tempFile = null;
 
         try {
-            tempFile = Files.createTempFile("ocr_input_", ".tmp");
+            tempFile = Files.createTempFile("ocr_input_" + UUID.randomUUID(), ".tmp");
             Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
             String command = String.format("tesseract %s stdout -l %s", tempFile.toAbsolutePath(), language);

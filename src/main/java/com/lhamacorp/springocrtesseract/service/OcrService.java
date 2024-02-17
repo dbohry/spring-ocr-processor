@@ -3,7 +3,6 @@ package com.lhamacorp.springocrtesseract.service;
 import com.lhamacorp.springocrtesseract.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 
 @Slf4j
 @Service
@@ -34,7 +32,6 @@ public class OcrService {
         return executionId;
     }
 
-    @Async
     public void processImage(String id, MultipartFile file, String language) throws IOException {
         try {
             log.info("Starting OCR processing for execution [{}]", id);
@@ -42,7 +39,7 @@ public class OcrService {
 
             try (InputStream fileInputStream = new ByteArrayInputStream(fileContent)) {
                 String result = processor.process(fileInputStream, language);
-                log.info("OCR processing completed for execution [{}]. Saving result...", id);
+                log.info("OCR processing completed for execution [{}]", id);
                 storeResult(id, result);
             }
 
