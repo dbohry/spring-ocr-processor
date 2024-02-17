@@ -36,7 +36,7 @@ public class OcrService {
         return executionId;
     }
 
-    public void processImage(String id, MultipartFile file, String language) {
+    public void processImage(String id, MultipartFile file, String language) throws IOException {
         String imagePath = getPath(id) + "/" + file.getOriginalFilename();
 
         new File(getPath(id)).mkdirs();
@@ -51,8 +51,9 @@ public class OcrService {
 
             log.info("Saving OCR result for execution [{}]", id);
             storeResult(id, result);
-        } catch (IOException | InterruptedException e) {
+        } catch (NoSuchFileException | InterruptedException e) {
             log.error("An error occurred while processing execution [{}]", id, e);
+            storeResult(id, "Failed");
         }
     }
 
