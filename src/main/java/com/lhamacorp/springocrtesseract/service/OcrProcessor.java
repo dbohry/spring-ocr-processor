@@ -42,7 +42,8 @@ public class OcrProcessor {
             Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
             String command = String.format("tesseract %s stdout -l %s", tempFile.toAbsolutePath(), language);
-            Process process = Runtime.getRuntime().exec(command);
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+            Process process = processBuilder.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
