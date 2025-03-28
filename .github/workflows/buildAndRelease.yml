@@ -41,7 +41,7 @@ jobs:
 
   dockerize-arm:
     name: Dockerize ARM Application
-    needs: dockerize
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
