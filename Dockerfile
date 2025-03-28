@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim as BuildJava
+FROM eclipse-temurin:21-jre-noble as BuildJava
 
 RUN apt-get update && \
     apt-get install -y tesseract-ocr wget && \
