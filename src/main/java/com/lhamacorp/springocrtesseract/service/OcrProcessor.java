@@ -81,9 +81,10 @@ public class OcrProcessor {
     }
 
     private void storeResult(String id, String result) throws IOException {
-        new File(getPath(id)).mkdirs();
-        Path outputFilePathObj = Paths.get(getPath(id) + "/output.txt");
-        Files.write(outputFilePathObj, result.getBytes(), StandardOpenOption.CREATE);
+        Path outputDir = Paths.get(getPath(id));
+        Files.createDirectories(outputDir);
+        Path outputFilePath = outputDir.resolve("output.txt");
+        Files.write(outputFilePath, result.getBytes(), StandardOpenOption.CREATE);
     }
 
 }
