@@ -27,7 +27,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - name: Build the Docker image
         run: ./gradlew build && docker build -t lhamacorp/spring-ocr:latest .
