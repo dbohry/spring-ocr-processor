@@ -23,7 +23,7 @@ public class OcrService {
 
     private final OcrProcessor processor;
 
-    private static final String DEFAULT_LANG = "deu";
+    private static final String DEFAULT_LANG = "eng";
     private static final String DEFAULT_DIR = "./files/";
 
     public String triggerProcess(MultipartFile file, String language) throws IOException {
