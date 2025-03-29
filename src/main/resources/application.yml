@@ -3,3 +3,8 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+
+client:
+  inference:
+    url: ${inference_url:}
+    model: ${inference_model:}

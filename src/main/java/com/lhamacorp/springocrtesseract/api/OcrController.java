@@ -3,6 +3,7 @@ package com.lhamacorp.springocrtesseract.api;
 import com.lhamacorp.springocrtesseract.api.dto.JobResult;
 import com.lhamacorp.springocrtesseract.api.dto.OcrResult;
 import com.lhamacorp.springocrtesseract.service.OcrService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,7 +43,14 @@ public class OcrController {
             @ApiResponse(responseCode = "404", description = "Result not found")
         })
     public ResponseEntity<OcrResult> getResult(@PathVariable String id) {
-        OcrResult response = new OcrResult(service.findProcess(id));
+        OcrResult response = new OcrResult(service.getResult(id));
+        return ResponseEntity.ok(response);
+    }
+
+    @Hidden
+    @GetMapping("{id}/clean")
+    public ResponseEntity<OcrResult> getCleanedResult(@PathVariable String id) {
+        OcrResult response = new OcrResult(service.getCleanedResult(id));
         return ResponseEntity.ok(response);
     }
 

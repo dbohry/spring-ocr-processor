@@ -1,5 +1,6 @@
 package com.lhamacorp.springocrtesseract.service;
 
+import com.lhamacorp.springocrtesseract.client.InferenceClient;
 import com.lhamacorp.springocrtesseract.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import static com.lhamacorp.springocrtesseract.Common.getPath;
 public class OcrService {
 
     private final OcrProcessor processor;
+    private final InferenceClient inferenceClient;
 
     public String triggerProcess(MultipartFile file, String language) throws IOException {
         String executionId = UUID.randomUUID().toString();
@@ -27,7 +29,7 @@ public class OcrService {
         return executionId;
     }
 
-    public String findProcess(String id) {
+    public String getResult(String id) {
         try {
             String filePath = getPath(id) + "/output.txt";
             return Files.readString(Paths.get(filePath));
@@ -36,6 +38,12 @@ public class OcrService {
             throw new NotFoundException("Ocr result not found");
         }
 
+    }
+
+    public String getCleanedResult(String id) {
+        String result = getResult(id);
+
+        return inferenceClient.infer(result);
     }
 
     private String validateAndGetLanguage(String language) {
