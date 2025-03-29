@@ -15,7 +15,7 @@ import static com.lhamacorp.springocrtesseract.Common.getPath;
 @Component
 public class OcrProcessor {
 
-    @Async
+    @Async("taskExecutor")
     public void process(String id, MultipartFile file, String language) throws IOException {
         try {
             log.info("Starting OCR processing for execution [{}]", id);
