@@ -13,7 +13,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '21' # or the version you use
-          distribution: 'temurin' # or another distribution
+          java-version: '21'
+          distribution: 'temurin'
       - name: Build with Gradle
         run: chmod +x ./gradlew && ./gradlew clean build test
